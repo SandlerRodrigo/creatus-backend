@@ -1,22 +1,31 @@
-import { Response } from 'express';
+import { Request, Response } from 'express';
 import bcrypt from 'bcryptjs';
 import prisma from '../prisma/client';
 import generateCSV from '../utils/csvGenerator';
+import { User } from '../types/User';
 import { AuthenticatedRequest } from '../types/AuthenticateRequest';
 
-const createUser = async (req: AuthenticatedRequest, res: Response) => {
+const isValidLevel = (level: User["level"]): level is 1 | 2 | 3 | 4 | 5 => {
+  return [1, 2, 3, 4, 5].includes(level);
+};
+
+const createUser = async (req: Request<{}, {}, Omit<User, 'id'>>, res: Response) => {
   const { name, email, password, level } = req.body;
 
+  if (!isValidLevel(level)) {
+    return res.status(400).json({ msg: 'Nível inválido. Deve ser 1, 2, 3, 4 ou 5.' });
+  }
+
   try {
-    const user = await prisma.user.findUnique({
+    const existingUser = await prisma.user.findUnique({
       where: { email }
     });
-    if (user) {
+    if (existingUser) {
       return res.status(400).json({ msg: 'Usuário já existe' });
     }
 
-    const salt = await bcrypt.genSalt(10); // Gerando o salt
-    const hashedPassword = await bcrypt.hash(password, salt); // Usando o salt para hashear a senha
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
 
     const newUser = await prisma.user.create({
       data: {
@@ -34,7 +43,7 @@ const createUser = async (req: AuthenticatedRequest, res: Response) => {
   }
 };
 
-const getUsers = async (req: AuthenticatedRequest, res: Response) => {
+const getUsers = async (req: Request, res: Response) => {
   try {
     const users = await prisma.user.findMany();
     res.json(users);
@@ -44,7 +53,7 @@ const getUsers = async (req: AuthenticatedRequest, res: Response) => {
   }
 };
 
-const getUserById = async (req: AuthenticatedRequest, res: Response) => {
+const getUserById = async (req: Request<{ id: string }>, res: Response) => {
   try {
     const user = await prisma.user.findUnique({
       where: { id: req.params.id }
@@ -57,8 +66,12 @@ const getUserById = async (req: AuthenticatedRequest, res: Response) => {
   }
 };
 
-const updateUser = async (req: AuthenticatedRequest, res: Response) => {
+const updateUser = async (req: Request<{ id: string }, {}, Partial<Omit<User, 'id'>>>, res: Response) => {
   const { name, email, password, level } = req.body;
+
+  if (level !== undefined && !isValidLevel(level)) {
+    return res.status(400).json({ msg: 'Nível inválido. Deve ser 1, 2, 3, 4 ou 5.' });
+  }
 
   try {
     const user = await prisma.user.findUnique({
@@ -74,7 +87,7 @@ const updateUser = async (req: AuthenticatedRequest, res: Response) => {
         name,
         email,
         password: hashedPassword,
-        level,
+        level: level !== undefined ? level : user.level,
       },
     });
 
@@ -85,7 +98,7 @@ const updateUser = async (req: AuthenticatedRequest, res: Response) => {
   }
 };
 
-const deleteUser = async (req: AuthenticatedRequest, res: Response) => {
+const deleteUser = async (req: Request<{ id: string }>, res: Response) => {
   try {
     const user = await prisma.user.delete({
       where: { id: req.params.id }

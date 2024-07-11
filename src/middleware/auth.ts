@@ -1,4 +1,4 @@
-import { Request, Response, NextFunction } from 'express';
+import { NextFunction, Response } from 'express';
 import jwt from 'jsonwebtoken';
 import { AuthenticatedRequest } from '../types/AuthenticateRequest';
 
@@ -11,6 +11,7 @@ interface UserPayload {
 
 const authMiddleware = (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
   const token = req.header('x-auth-token');
+  console.log('Token recebido:', token);
 
   if (!token) {
     return res.status(401).json({ msg: 'Nenhum token, autorização negada' });
@@ -23,6 +24,7 @@ const authMiddleware = (req: AuthenticatedRequest, res: Response, next: NextFunc
     }
     const decoded = jwt.verify(token, secret) as UserPayload;
     req.user = decoded.user;
+    console.log('Token decodificado:', decoded);
     next();
   } catch (err) {
     console.log('Erro ao decodificar o token:', err);
