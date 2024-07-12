@@ -4,6 +4,10 @@ Este é o desafio do backend para a entrevista na Creatus, desenvolvido para o t
 
 Para melhorar a organização do código ao longo do desenvolvimento, tomei a liberdade de ajustar algumas rotas solicitadas no desafio. Além disso, implementei hashing de senhas utilizando bcrypt para garantir a segurança dos dados dos usuários, armazenando apenas o hash das senhas no banco de dados em vez das senhas em texto puro.
 
+## Importante:
+
+- Dentro da pasta Relatório existe um detalhamento do projeto (report.pdf) e um arquivo.json com exemplos de teste das rotas no Postman. 
+
 ## Funcionalidades
 
 - Autenticação JWT: Proteção de rotas com tokens JWT.
