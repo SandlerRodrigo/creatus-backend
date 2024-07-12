@@ -6,7 +6,7 @@ import prisma from '../prisma/client';
 const generateToken = async (payload: object): Promise<string> => {
   const secret = process.env.JWT_SECRET;
   if (!secret) {
-    throw new Error('JWT secret is not defined');
+    throw new Error('JWT secret não foi definido');
   }
   return jwt.sign(payload, secret, { expiresIn: '1h' });
 };

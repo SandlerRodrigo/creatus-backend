@@ -10,7 +10,7 @@ const isValidLevel = (level: User["level"]): level is 1 | 2 | 3 | 4 | 5 => {
 };
 
 const createUser = async (req: Request<{}, {}, Omit<User, 'id'>>, res: Response) => {
-  const { name, email, password, level } = req.body;
+  const { name, email, password, level } = req.body as User;
 
   if (!isValidLevel(level)) {
     return res.status(400).json({ msg: 'Nível inválido. Deve ser 1, 2, 3, 4 ou 5.' });
@@ -67,7 +67,7 @@ const getUserById = async (req: Request<{ id: string }>, res: Response) => {
 };
 
 const updateUser = async (req: Request<{ id: string }, {}, Partial<Omit<User, 'id'>>>, res: Response) => {
-  const { name, email, password, level } = req.body;
+  const { name, email, password, level } = req.body as User;
 
   if (level !== undefined && !isValidLevel(level)) {
     return res.status(400).json({ msg: 'Nível inválido. Deve ser 1, 2, 3, 4 ou 5.' });

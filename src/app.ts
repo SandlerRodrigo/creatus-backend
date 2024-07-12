@@ -8,7 +8,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-app.get('/', (req, res) => res.send('API Running'));
+app.get('/', (req, res) => res.send('API Rodando!'));
 
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);

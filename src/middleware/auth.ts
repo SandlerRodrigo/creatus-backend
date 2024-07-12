@@ -20,7 +20,7 @@ const authMiddleware = (req: AuthenticatedRequest, res: Response, next: NextFunc
   try {
     const secret = process.env.JWT_SECRET;
     if (!secret) {
-      throw new Error('JWT secret is not defined');
+      throw new Error('JWT secret não foi definido');
     }
     const decoded = jwt.verify(token, secret) as UserPayload;
     req.user = decoded.user;
