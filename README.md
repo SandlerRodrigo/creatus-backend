@@ -1,43 +1,58 @@
 # Creatus Backend
 
-Este é o backend do projeto Creatus, desenvolvido para o teste técnico de programação em Node.js. O projeto inclui funcionalidades de autenticação, CRUD de usuários e geração de relatórios.
+Este é o desafio do backend para a entrevista na Creatus, desenvolvido para o teste técnico de programação em Node.js. O projeto inclui funcionalidades de autenticação, CRUD de usuários e geração de relatórios.
+
+Para melhorar a organização do código ao longo do desenvolvimento, tomei a liberdade de ajustar algumas rotas solicitadas no desafio. Além disso, implementei hashing de senhas utilizando bcrypt para garantir a segurança dos dados dos usuários, armazenando apenas o hash das senhas no banco de dados em vez das senhas em texto puro.
+
+## Funcionalidades
+
+- Autenticação JWT: Proteção de rotas com tokens JWT.
+- CRUD de Usuários: Criação, leitura, atualização e exclusão de usuários.
+- Geração de Relatórios: Geração de relatórios em formato CSV acessível apenas para usuários autorizados.
 
 ## Tecnologias Utilizadas
 
-- Node.js
-- TypeScript
-- Express.js
-- Prisma ORM
-- MongoDB
-- JWT (JSON Web Token)
-- Bcrypt
-- Cors
+- Node.js: Plataforma de desenvolvimento.
+- Express: Framework para construção de APIs.
+- TypeScript: Linguagem de programação para adicionar tipagem estática ao JavaScript.
+- Prisma: ORM para interação com o banco de dados.
+- MongoDB: Banco de dados NoSQL.
+- bcryptjs: Biblioteca para hash de senhas.
+- jsonwebtoken: Biblioteca para geração e verificação de tokens JWT.
+- json2csv: Biblioteca para conversão de dados JSON para CSV.
 
 ## Estrutura do Projeto
 ```
 creatus-backend/
+├── node_modules/
 ├── src/
 │   ├── config/
-│   │   └── db.ts
+│   │   ├── db.ts
 │   ├── controllers/
 │   │   ├── authController.ts
-│   │   └── userController.ts
+│   │   ├── userController.ts
 │   ├── middleware/
-│   │   └── auth.ts
+│   │   ├── auth.ts
+│   ├── prisma/
+│   │   ├── client.ts
+│   │   ├── schema.prisma
 │   ├── routes/
 │   │   ├── authRoutes.ts
-│   │   └── userRoutes.ts
-│   ├── prisma/
-│   │   └── client.ts
+│   │   ├── userRoutes.ts
+│   ├── types/
+│   │   ├── AuthenticateRequest.ts
+│   │   ├── express.d.ts
+│   │   ├── User.ts
 │   ├── utils/
-│   │   └── csvGenerator.ts
+│   │   ├── csvGenerator.ts
 │   ├── app.ts
-│   └── server.ts
+│   ├── server.ts
 ├── .env
 ├── .gitignore
+├── package-lock.json
 ├── package.json
 ├── README.md
-└── tsconfig.json
+├── tsconfig.json
 ```
 
 ## Configuração do Ambiente
@@ -45,6 +60,7 @@ creatus-backend/
 ### Pré-requisitos
 
 - Node.js
+- npm
 - MongoDB
 - Prisma
 
@@ -69,13 +85,7 @@ creatus-backend/
    npx prisma migrate dev
 
 6. Inicie o servidor:
-   npm start
-
-## Execução do Projeto
-
-Para rodar o servidor de desenvolvimento, utilize o comando:
-npm start
-O servidor estará disponível em http://localhost:5001.
+   npm start. O servidor estará disponível em http://localhost:5001.
 
 ## Rotas da API
 
@@ -200,7 +210,7 @@ O servidor estará disponível em http://localhost:5001.
   ```
 ## Autenticação e Autorização
 
-As rotas protegidas utilizam tokens JWT para autenticação. Para acessar essas rotas, é necessário incluir o token JWT no cabeçalho da requisição.
+As rotas protegidas - a rota de geração de relatório em CSV - utilizam tokens JWT para autenticação. Para acessar essas rotas, é necessário incluir o token JWT no cabeçalho da requisição.
 
 ### Exemplo de Cabeçalho
 ```
@@ -209,7 +219,7 @@ Value: seu_token_jwt_aqui
 ```
 ## Gerar Relatórios
 
-A rota para gerar relatórios em CSV está protegida e só pode ser acessada por usuários com nível >= 4. O token JWT deve ser incluído no cabeçalho da requisição.
+A rota para gerar relatórios em CSV está protegida e só pode ser acessada por usuários com nível >= 4. Como informado previamente, o token JWT deve ser incluído no cabeçalho da requisição.
 
 ## Considerações Finais
 
